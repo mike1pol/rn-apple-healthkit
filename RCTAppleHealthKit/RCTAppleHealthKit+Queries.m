@@ -77,6 +77,12 @@
             dispatch_async(dispatch_get_main_queue(), ^{
 
                 for (HKQuantitySample *sample in results) {
+                    NSString *context = @"nil";
+                    if (@available(iOS 11.0, *)) {
+                        if (sample.metadata[HKMetadataKeyHeartRateMotionContext] != nil) {
+                            context = sample.metadata[HKMetadataKeyHeartRateMotionContext];
+                        }
+                    }
                     HKQuantity *quantity = sample.quantity;
                     double value = [quantity doubleValueForUnit:unit];
 
@@ -87,6 +93,7 @@
                             @"value" : @(value),
                             @"startDate" : startDateString,
                             @"endDate" : endDateString,
+                            @"context" : context,
                     };
 
                     [data addObject:elem];
